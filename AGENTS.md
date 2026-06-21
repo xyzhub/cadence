@@ -30,6 +30,7 @@ ledger.mjs   show | next | add <id> <score> "<desc>" | begin <id> [--step act] |
 run-gate.mjs <id> | --auto [files...] | --list
 doctor.mjs   # health check
 tick.mjs     # resume-check (auto-reconcile) + digest + next + relevant gates
+selftest.mjs # pin the core's hand-verified edges (exit 0/1; itself a failable gate)
 ```
 
 ## Fan out (when work is wide or needs adversarial verification)

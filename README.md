@@ -71,7 +71,8 @@ and appends a contract block to your `AGENTS.md`. Edit the config to taste — i
 ```
 cadence/
   README.md            ← you are here
-  AGENTS.md            ← how agents operate in a Cadence repo (the contract)
+  AGENTS.md            ← how agents operate in a Cadence repo (the contract; single source of truth)
+  CLAUDE.md            ← thin `@AGENTS.md` import so Claude Code picks up the same contract
   protocols/           ← the 9 protocols (reference; load on demand)
   schemas/             ← ledger / gate-signal / adapter / subagent-result (JSON Schema)
   lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · adopt.mjs · doctor.mjs · tick.mjs

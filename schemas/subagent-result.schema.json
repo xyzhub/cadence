@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "cadence/subagent-result",
+  "title": "Cadence subagent result (the context-firewall contract)",
+  "description": "What a fan-out subagent returns to the orchestrator. POINTERS, NOT PAYLOADS — findings reference file:line ranges, never embed corpora. Caps keep the orchestrator's window bounded regardless of how much the subagent read.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "findings"],
+  "properties": {
+    "summary": { "type": "string", "maxLength": 600, "description": "the distilled conclusion (the part that crosses back)" },
+    "findings": {
+      "type": "array", "maxItems": 25,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["claim", "pointer"],
+        "properties": {
+          "claim": { "type": "string", "maxLength": 240 },
+          "pointer": { "type": "string", "maxLength": 200, "description": "file:line range / URL — where to look, NOT the content itself" },
+          "severity": { "type": "string", "enum": ["high", "medium", "low", "info"] },
+          "confidence": { "type": "string", "enum": ["confirmed", "likely", "needs-evidence"], "description": "confirmed REQUIRES an execution artifact (see evidence)" },
+          "evidence": { "type": "object", "additionalProperties": false, "properties": { "type": { "type": "string", "enum": ["failing-test", "rerun", "primary-source"] }, "pointer": { "type": "string", "maxLength": 200 } } }
+        }
+      }
+    },
+    "verifiedFacts": { "type": "array", "maxItems": 10, "items": { "type": "object", "additionalProperties": false, "required": ["oneLine"], "properties": { "oneLine": { "type": "string", "maxLength": 280 }, "pointer": { "type": "string", "maxLength": 200 } } } },
+    "openQuestions": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 200 } }
+  }
+}

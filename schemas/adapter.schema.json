@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "cadence/adapter",
+  "title": "Cadence project adapter (cadence.config.json)",
+  "description": "The SINGLE per-project customization point. Declares this project's gates, relevance rules, retrieval tool, and verify channels. Stack-neutral: the orchestrator never changes — only this file does.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project", "gates"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "project": { "type": "string" },
+    "gates": {
+      "type": "object",
+      "description": "id -> failable check. The orchestrator runs these via run-gate.mjs and ingests only the signal.",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false,
+        "required": ["cmd"],
+        "properties": {
+          "cmd": { "type": "string", "description": "shell command" },
+          "cwd": { "type": "string", "description": "relative to project root" },
+          "env": { "type": "object", "additionalProperties": { "type": "string" } },
+          "timeoutMs": { "type": "integer", "default": 600000 },
+          "failPattern": { "type": "string", "description": "regex; if it matches output the gate fails (in addition to exit code)" },
+          "successPattern": { "type": "string", "description": "regex; output MUST match or the gate fails" }
+        }
+      }
+    },
+    "relevance": {
+      "type": "object", "additionalProperties": false,
+      "description": "OPT-IN. Run only the gates a diff can affect. Worth it only when the full suite is slow.",
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "rules": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["if", "run"],
+          "properties": { "if": { "type": "string", "description": "regex over changed file paths" }, "run": { "oneOf": [ { "type": "array", "items": { "type": "string" } }, { "const": "ALL" } ] } }
+        } }
+      }
+    },
+    "retrieval": {
+      "type": "object", "additionalProperties": false,
+      "description": "Retrieval-first: prefer compressed queries over whole-file reads. Probed in order.",
+      "properties": { "tool": { "type": "string" }, "fallback": { "type": "string" } }
+    },
+    "verifyChannels": {
+      "type": "array",
+      "description": "Reliability-ranked behavioral checks (run highest-confidence first, auto-fallback). Stack presets: web (build+http), cli (run+assert stdout), library (test subset), service (start+health).",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "type": "string", "enum": ["web", "cli", "library", "service", "smoke"] },
+          "cmd": { "type": "string" }, "start": { "type": "string" }, "url": { "type": "string" }, "expect": { "type": "string" }
+        }
+      }
+    },
+    "parallel": {
+      "type": "object", "additionalProperties": false,
+      "description": "OPT-IN heavy part. Declared-disjoint worktrees for parallel implementation.",
+      "properties": { "enabled": { "type": "boolean", "default": false }, "setup": { "type": "string", "description": "per-worktree bootstrap, e.g. python -m venv .venv && .venv/bin/pip install -e ." }, "env": { "type": "object", "additionalProperties": { "type": "string" } } }
+    }
+  }
+}

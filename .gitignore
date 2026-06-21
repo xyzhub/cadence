@@ -1,0 +1,7 @@
+# Cadence is the framework SOURCE — it has no build step and no deps.
+# These would only appear if someone ran a target's runtime here by mistake.
+node_modules/
+.cadence/loop-state.json
+.cadence/facts.jsonl
+*.log
+.DS_Store

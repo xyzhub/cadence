@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "cadence/loop-state",
+  "title": "Cadence loop ledger",
+  "description": "Durable external memory for a stateless orchestrator. The single source of truth across ticks; the orchestrator reconstructs a bounded working context from this each tick instead of carrying a transcript.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "currentGoal", "tick", "pending", "done", "blockedOnOwner", "verifiedFacts", "recentDecisions", "gates"],
+  "properties": {
+    "version": { "const": 1 },
+    "updated": { "type": "string", "description": "ISO timestamp of last write" },
+    "currentGoal": { "type": "string", "description": "the one-line objective the loop is currently pursuing" },
+    "tick": { "type": "integer", "minimum": 0, "description": "monotonic pass counter" },
+    "config": { "type": "object", "description": "FIFO cap + paging knobs", "additionalProperties": false, "properties": {
+      "recentDecisionsCap": { "type": "integer", "default": 5 },
+      "factsInlineCap": { "type": "integer", "default": 40, "description": "max facts kept inline before paging out to factsFile" },
+      "factsFile": { "type": "string", "default": ".cadence/facts.jsonl" }
+    } },
+    "pending": {
+      "type": "array",
+      "description": "work queue, value-scored; the next tick takes the highest score",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "desc", "score"],
+        "properties": {
+          "id": { "type": "string" },
+          "desc": { "type": "string" },
+          "score": { "type": "number", "description": "value/(effort*risk) — higher runs first" },
+          "effort": { "type": "string", "enum": ["trivial", "small", "medium", "large"] },
+          "ownerGated": { "type": "boolean" },
+          "lastError": {
+            "type": "object", "additionalProperties": false,
+            "description": "set when a tick on this item failed its gate — closes the failure loop so the item re-enters with context",
+            "required": ["firstError", "tick"],
+            "properties": {
+              "firstError": { "type": "string", "maxLength": 500 },
+              "ranBecause": { "type": "string" },
+              "tick": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+    "done": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "line"],
+        "properties": {
+          "id": { "type": "string" },
+          "line": { "type": "string", "description": "one-line summary of what shipped" },
+          "sha": { "type": "string" },
+          "tick": { "type": "integer" }
+        }
+      }
+    },
+    "blockedOnOwner": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "desc"],
+        "properties": {
+          "id": { "type": "string" },
+          "desc": { "type": "string" },
+          "since": { "type": "integer", "description": "tick it was blocked" }
+        }
+      }
+    },
+    "verifiedFacts": {
+      "type": "array",
+      "description": "lossless cross-tick knowledge as a paged INDEX: one-liners (+ optional pointer to full content on disk). The orchestrator loads the index, not the corpus.",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "oneLine"],
+        "properties": {
+          "id": { "type": "string" },
+          "oneLine": { "type": "string", "maxLength": 280 },
+          "pointer": { "type": "string", "description": "path / file:line where the full evidence lives" }
+        }
+      }
+    },
+    "recentDecisions": {
+      "type": "array",
+      "description": "bounded, FIFO-capped rolling judgment context (the one place statelessness deliberately bends)",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["tick", "decided"],
+        "properties": {
+          "tick": { "type": "integer" },
+          "decided": { "type": "string" },
+          "why": { "type": "string" }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "description": "last result per gate id — written ONLY by ledger.patchGate (single writer)",
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false,
+        "required": ["pass", "tick"],
+        "properties": {
+          "pass": { "type": "boolean" },
+          "firstError": { "type": "string", "maxLength": 500 },
+          "ms": { "type": "number" },
+          "tick": { "type": "integer" },
+          "ranBecause": { "type": "string" }
+        }
+      }
+    }
+  }
+}

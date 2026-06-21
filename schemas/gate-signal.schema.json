@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "cadence/gate-signal",
+  "title": "Cadence gate signal",
+  "description": "The ONLY thing a gate returns to the orchestrator — a signal, never the full log. The window stays bounded regardless of build output size.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["gate", "pass", "reason", "ms"],
+  "properties": {
+    "gate": { "type": "string" },
+    "pass": { "type": "boolean" },
+    "reason": {
+      "type": "string",
+      "enum": ["pass", "gate", "error"],
+      "description": "pass = green; gate = the code genuinely failed the check; error = the gate could not run/parse/timed out (a CONFIG problem, not a code problem) — both gate and error are pass:false (fail closed) but the orchestrator treats them differently"
+    },
+    "firstError": { "type": "string", "maxLength": 500, "description": "first matching/last meaningful line, capped" },
+    "ms": { "type": "number" },
+    "exitCode": { "type": ["integer", "null"] }
+  }
+}

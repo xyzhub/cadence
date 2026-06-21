@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "updated": "1970-01-01T00:00:00.000Z",
+  "currentGoal": "",
+  "tick": 0,
+  "config": { "recentDecisionsCap": 5, "factsInlineCap": 40, "factsFile": ".cadence/facts.jsonl" },
+  "pending": [],
+  "done": [],
+  "blockedOnOwner": [],
+  "verifiedFacts": [],
+  "recentDecisions": [],
+  "gates": {}
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/adapter.schema.json",
+  "project": "example-polyglot",
+  "_comment": "The ONLY file you edit per project. Declare your gates as commands + how to detect failure. Polyglot example (JS + Python + Rust patterns shown).",
+  "gates": {
+    "typecheck": { "cmd": "npx tsc --noEmit", "timeoutMs": 180000, "failPattern": "error TS\\d+" },
+    "test-js":   { "cmd": "npm test --silent", "failPattern": "(\\d+ failing|FAIL\\b)" },
+    "test-py":   { "cmd": "pytest -q", "cwd": "api", "failPattern": "(failed|error)\\b", "successPattern": "passed" },
+    "lint-py":   { "cmd": "ruff check .", "cwd": "api", "failPattern": "(^|\\s)E\\d{3}|error" },
+    "test-rs":   { "cmd": "cargo test", "cwd": "engine", "failPattern": "(test result: FAILED|error\\[E\\d+\\])" }
+  },
+  "relevance": {
+    "enabled": true,
+    "rules": [
+      { "if": "\\.(ts|tsx|vue|js)$", "run": ["typecheck", "test-js"] },
+      { "if": "\\.py$", "run": ["test-py", "lint-py"] },
+      { "if": "\\.rs$", "run": ["test-rs"] },
+      { "if": "(package-lock\\.json|pnpm-lock\\.yaml|pyproject\\.toml|requirements.*\\.txt|Cargo\\.(toml|lock)|go\\.(mod|sum))$", "run": "ALL" }
+    ]
+  },
+  "retrieval": { "tool": "codegraph explore", "fallback": "rg -n" },
+  "verifyChannels": [
+    { "id": "cli-smoke", "kind": "cli", "cmd": "node dist/cli.js --help", "expect": "Usage" },
+    { "id": "http-smoke", "kind": "service", "start": "node dist/server.js", "url": "http://localhost:3000/health", "expect": "ok" }
+  ],
+  "parallel": { "enabled": false }
+}

@@ -92,6 +92,18 @@
         }
       }
     },
+    "inFlight": {
+      "type": ["object", "null"],
+      "description": "INTENT JOURNAL. The item the current tick is attempting, written BEFORE side effects (begin) and cleared on done/fail. If non-null when a tick starts, the previous tick was interrupted (crash) and must be reconciled before proceeding.",
+      "additionalProperties": false,
+      "required": ["item", "started", "tick"],
+      "properties": {
+        "item": { "type": "string" },
+        "step": { "type": "string", "description": "optional sub-step label, e.g. act / gate / commit" },
+        "started": { "type": "string" },
+        "tick": { "type": "integer" }
+      }
+    },
     "gates": {
       "type": "object",
       "description": "last result per gate id — written ONLY by ledger.patchGate (single writer)",

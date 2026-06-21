@@ -66,6 +66,17 @@ and appends a contract block to your `AGENTS.md`. Edit the config to taste — i
 - A project with no failable gate (nothing to verify against) — Cadence's spine is the gate signal.
 - A throwaway script. The ledger + tick discipline earns its cost only across many passes.
 
+## Crash-safety (better than a checkpoint)
+
+There's no snapshot to take or restore. Every ledger write is **atomic** (temp + rename) and
+**per-mutation**, so a `kill -9` can't corrupt or lose committed state — recovery is just "read the
+ledger and continue" (startup and recovery are the same path). A **write-ahead intent journal**
+(`begin` → `inFlight`, cleared on `done`/`fail`) closes the one gap a bare ledger has — a crash
+*between* a side effect and its ledger write. On resume, `tick.mjs` detects the interrupted tick and
+reconciles: a red gate auto-reopens the item with context (safe, automatic); a green gate is surfaced
+for confirmation (never auto-completed, to avoid a false "done"). A `lock` (atomic `O_EXCL`, stale by
+dead-`--pid` or `--ttl`) enforces one loop per repo and reclaims a crashed session's lock.
+
 ## Layout
 
 ```

@@ -7,6 +7,7 @@ This project runs a **Cadence** loop — a stateless orchestrator over a durable
 - **Ingest conclusions, not corpora.** Never read whole files or raw logs into your own context. Delegate high-volume reading to subagents that return distilled, pointer-only results.
 - **Run gates via the wrapper, never raw:** `node .cadence/lib/run-gate.mjs --auto` (or `<gateId>`). It returns a pass/fail SIGNAL; never paste full build logs. `reason:"error"` means the gate config is broken, not the code.
 - **Close the loop:** green → `ledger.mjs done <id> "<line>"`; red → `ledger.mjs fail <id> --error "<firstError>"` (re-opens the item with context). Record durable knowledge with `ledger.mjs fact`, decisions with `ledger.mjs decide`.
+- **Crash-safe:** run `node .cadence/lib/ledger.mjs lock --owner <id>` at session start (`unlock` at end); `begin <id>` BEFORE acting (write-ahead intent). On resume, `node .cadence/lib/tick.mjs` auto-reconciles any interrupted tick — you never lose or double-do work.
 - **Commit only the files you wrote. Pause (don't churn) when no high-value pending item remains.**
 
 Full protocols: the Cadence source `protocols/`.

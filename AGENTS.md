@@ -12,15 +12,24 @@ this once; load a `protocols/NN-*.md` only when you need its detail (they're ref
 6. **Commit only files you wrote. Pause — don't churn — when no high-value item remains.** [P08]
 
 ## The tick (one pass)
-`show → next → act (fan out if parallel) → run-gate --auto → verify+review → done|fail|no-op → fact/decide → commit own files → end`
+`tick (resume-check) → next → begin <id> → act (fan out if parallel) → run-gate --auto → verify+review → done|fail|no-op → fact/decide → commit own files → end`
+
+`begin` writes a write-ahead intent journal BEFORE side effects. If you crash, the next `tick`
+auto-reconciles (red gate → retry; green → confirm). State is atomic + durable, so resume is just
+"read the ledger and continue" — no checkpoint to restore.
+
+## Crash-safety & single-writer
+- Start a session: `node .cadence/lib/ledger.mjs lock --owner <id>`; end: `unlock`. A second loop on the repo is refused; a crashed lock is reclaimed when stale (`--ttl` / dead `--pid`) or with `--force`.
+- Always `begin <id>` before acting; resolving (`done`/`fail`/`reconcile`) clears the intent journal.
 
 ## Verbs you'll use
 ```
-ledger.mjs   show | next | add <id> <score> "<desc>" | done <id> "<line>" --sha x
-             fail <id> --error "..." | block <id> | unblock <id> | gate <id> pass|fail | fact "..." | decide "..." "why"
+ledger.mjs   show | next | add <id> <score> "<desc>" | begin <id> [--step act] | done <id> "<line>" --sha x
+             fail <id> --error "..." | reconcile --done "<line>" | --retry --error "..." | inflight
+             block <id> | unblock <id> | gate <id> pass|fail | fact "..." | decide "..." "why" | lock/unlock --owner <id>
 run-gate.mjs <id> | --auto [files...] | --list
 doctor.mjs   # health check
-tick.mjs     # digest + next + relevant gates in one call
+tick.mjs     # resume-check (auto-reconcile) + digest + next + relevant gates
 ```
 
 ## Fan out (when work is wide or needs adversarial verification)

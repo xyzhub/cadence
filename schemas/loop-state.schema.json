@@ -60,13 +60,30 @@
     },
     "blockedOnOwner": {
       "type": "array",
+      "description": "items parked on an owner decision. A blocked item is a STASHED pending item (its full context is preserved so unblock restores it) plus `since`.",
       "items": {
         "type": "object", "additionalProperties": false,
         "required": ["id", "desc"],
         "properties": {
           "id": { "type": "string" },
           "desc": { "type": "string" },
-          "since": { "type": "integer", "description": "tick it was blocked" }
+          "since": { "type": "integer", "description": "tick it was blocked" },
+          "score": { "type": "number" },
+          "effort": { "type": "string", "enum": ["trivial", "small", "medium", "large"] },
+          "ownerGated": { "type": "boolean" },
+          "gate": { "type": "string" },
+          "accept": { "type": "string" },
+          "brief": { "type": "string" },
+          "phase": { "type": "string" },
+          "lastError": {
+            "type": "object", "additionalProperties": false,
+            "required": ["firstError", "tick"],
+            "properties": {
+              "firstError": { "type": "string", "maxLength": 500 },
+              "ranBecause": { "type": "string" },
+              "tick": { "type": "integer" }
+            }
+          }
         }
       }
     },

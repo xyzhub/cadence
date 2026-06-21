@@ -18,6 +18,11 @@ this once; load a `protocols/NN-*.md` only when you need its detail (they're ref
 auto-reconciles (red gate → retry; green → confirm). State is atomic + durable, so resume is just
 "read the ledger and continue" — no checkpoint to restore.
 
+**First tick / thin queue → PLAN, don't execute [P10].** If `pending` is empty or holds only
+`plan-backlog` (seeded by `adopt --goal`), the tick decomposes the goal into scored, gate-verifiable
+items, each with a brief in `.cadence/plan/` that pre-resolves its reads — so every later tick acts
+from the digest + one brief and never explores. `ledger add … --gate --accept --brief` carries it.
+
 ## Crash-safety & single-writer
 - Start a session: `node .cadence/lib/ledger.mjs lock --owner <id>`; end: `unlock`. A second loop on the repo is refused; a crashed lock is reclaimed when stale (`--ttl` / dead `--pid`) or with `--force`.
 - Always `begin <id>` before acting; resolving (`done`/`fail`/`reconcile`) clears the intent journal.

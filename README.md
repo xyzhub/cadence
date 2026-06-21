@@ -86,7 +86,7 @@ cadence/
   README.md            ← you are here
   AGENTS.md            ← how agents operate in a Cadence repo (the contract; single source of truth)
   CLAUDE.md            ← thin `@AGENTS.md` import so Claude Code picks up the same contract
-  protocols/           ← the 10 protocols (reference; load on demand)
+  protocols/           ← the 11 protocols (00–10; reference, load on demand)
   schemas/             ← ledger / gate-signal / adapter / subagent-result (JSON Schema)
   lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · context-budget.mjs · retrieval.mjs · adopt.mjs · doctor.mjs · tick.mjs · selftest.mjs
   templates/           ← cadence.config example · loop-prompt · agent prompts · workflow templates

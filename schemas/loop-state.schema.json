@@ -28,6 +28,10 @@
           "score": { "type": "number", "description": "value/(effort*risk) — higher runs first" },
           "effort": { "type": "string", "enum": ["trivial", "small", "medium", "large"] },
           "ownerGated": { "type": "boolean" },
+          "gate": { "type": "string", "description": "[P10] the gate id that proves this item done — if none exists, the item isn't ready" },
+          "accept": { "type": "string", "description": "[P10] one-line acceptance criterion (what 'done' means)" },
+          "brief": { "type": "string", "description": "[P10] pointer to a pre-resolved brief, e.g. plan/<goal>.briefs.md#<id> — the executing tick reads this instead of exploring" },
+          "phase": { "type": "string", "description": "[P10] optional grouping for phase checkpoints" },
           "lastError": {
             "type": "object", "additionalProperties": false,
             "description": "set when a tick on this item failed its gate — closes the failure loop so the item re-enters with context",

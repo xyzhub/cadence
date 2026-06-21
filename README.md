@@ -88,7 +88,7 @@ cadence/
   CLAUDE.md            ← thin `@AGENTS.md` import so Claude Code picks up the same contract
   protocols/           ← the 10 protocols (reference; load on demand)
   schemas/             ← ledger / gate-signal / adapter / subagent-result (JSON Schema)
-  lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · context-budget.mjs · adopt.mjs · doctor.mjs · tick.mjs · selftest.mjs
+  lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · context-budget.mjs · retrieval.mjs · adopt.mjs · doctor.mjs · tick.mjs · selftest.mjs
   templates/           ← cadence.config example · loop-prompt · agent prompts · workflow templates
   skill/SKILL.md       ← the Claude Code skill entry
 ```

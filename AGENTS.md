@@ -5,7 +5,7 @@ this once; load a `protocols/NN-*.md` only when you need its detail (they're ref
 
 ## The contract (always)
 1. **State is the ledger, not the chat.** Start every tick with `node .cadence/lib/ledger.mjs show`. End it by writing results back. Never assume something is "in context from before" — if it matters across ticks, `ledger fact` / `ledger decide` it now. [P00, P02]
-2. **Ingest conclusions, not corpora.** Never read whole files or raw logs into your window. Delegate volume to subagents that return distilled, pointer-only results. [P01]
+2. **Ingest conclusions, not corpora.** Never read whole files or raw logs into your window. Delegate volume to subagents that return distilled, pointer-only results. [P01] For where/what/blast-radius lookups, prefer a code graph when present (`.codegraph/` → `codegraph explore`/`node`) over grep+read; `rg -n` fallback. [P07]
 3. **Gates return signals.** Run `node .cadence/lib/run-gate.mjs --auto` (or `<id>`). Never paste raw build/test logs. `reason:"gate"` = fix the code; `reason:"error"` = fix the config. [P03]
 4. **Close the loop.** Green → `ledger done <id> "<line>"`; red → `ledger fail <id> --error "<firstError>"` (re-opens with context); empty diff → `ledger decide`, no commit. [P08]
 5. **Verify by execution, and review your own diff.** Confirmed = has an execution artifact. Send your own diff to an independent reviewer before commit. [P05]

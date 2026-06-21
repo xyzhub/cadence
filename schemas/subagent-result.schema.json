@@ -23,6 +23,16 @@
       }
     },
     "verifiedFacts": { "type": "array", "maxItems": 10, "items": { "type": "object", "additionalProperties": false, "required": ["oneLine"], "properties": { "oneLine": { "type": "string", "maxLength": 280 }, "pointer": { "type": "string", "maxLength": 200 } } } },
-    "openQuestions": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 200 } }
+    "openQuestions": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 200 } },
+    "budget": {
+      "type": "object", "additionalProperties": false,
+      "description": "self-reported context-budget status (Protocol 09). If the task needed more than the ~30%-window budget, set needsDecomposition and STOP rather than overrun.",
+      "properties": {
+        "withinBudget": { "type": "boolean" },
+        "tokensUsedEstimate": { "type": "integer" },
+        "needsDecomposition": { "type": "boolean" },
+        "suggestedSplit": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 160 } }
+      }
+    }
   }
 }

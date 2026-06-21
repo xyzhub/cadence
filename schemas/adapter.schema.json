@@ -42,6 +42,16 @@
       "description": "Retrieval-first: prefer compressed queries over whole-file reads. Probed in order.",
       "properties": { "tool": { "type": "string" }, "fallback": { "type": "string" } }
     },
+    "context": {
+      "type": "object", "additionalProperties": false,
+      "description": "Context-window budget. By DEFAULT every subagent's total work must fit in the first 30% of its window (the high-attention region; avoids lost-in-the-middle / context rot). Enforced by capping inputs + scoping/decomposing tasks; briefed to the agent for self-monitoring.",
+      "properties": {
+        "subagentWindowFraction": { "type": "number", "default": 0.30, "minimum": 0.05, "maximum": 1, "description": "fraction of the window all subagent work must fit within" },
+        "inputReserveFraction": { "type": "number", "default": 0.5, "minimum": 0.1, "maximum": 0.9, "description": "of that budget, the max share the INPUT (prompt + handed-in data) may occupy, leaving headroom for the agent's own reads/reasoning/output" },
+        "models": { "type": "object", "additionalProperties": { "type": "integer" }, "description": "model name -> context window in tokens; `default` is the fallback", "default": { "default": 200000 } },
+        "onExceed": { "type": "string", "enum": ["split", "warn", "abort"], "default": "split", "description": "what to do when an input exceeds its cap" }
+      }
+    },
     "verifyChannels": {
       "type": "array",
       "description": "Reliability-ranked behavioral checks (run highest-confidence first, auto-fallback). Stack presets: web (build+http), cli (run+assert stdout), library (test subset), service (start+health).",

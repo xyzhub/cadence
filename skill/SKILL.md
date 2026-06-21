@@ -33,4 +33,4 @@ Stop and hand back when the top pending score is below threshold, all remaining 
 
 ## Load a protocol only when needed
 `00` stateless model · `01` context firewall · `02` ledger · `03` gate signals · `04` fan-out+tiering ·
-`05` verification · `06` parallel worktrees (opt-in) · `07` retrieval-first · `08` lifecycle.
+`05` verification · `06` parallel worktrees (opt-in) · `07` retrieval-first · `08` lifecycle · `09` context budget (the 30% rule).

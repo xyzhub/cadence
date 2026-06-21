@@ -19,6 +19,12 @@
     ]
   },
   "retrieval": { "tool": "codegraph explore", "fallback": "rg -n" },
+  "context": {
+    "subagentWindowFraction": 0.30,
+    "inputReserveFraction": 0.5,
+    "models": { "default": 200000 },
+    "onExceed": "split"
+  },
   "verifyChannels": [
     { "id": "cli-smoke", "kind": "cli", "cmd": "node dist/cli.js --help", "expect": "Usage" },
     { "id": "http-smoke", "kind": "service", "start": "node dist/server.js", "url": "http://localhost:3000/health", "expect": "ok" }

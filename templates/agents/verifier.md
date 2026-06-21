@@ -6,5 +6,6 @@ You confirm or refute a specific finding/claim. Default to NOT confirmed unless 
 - Write and run the repro where possible; cite the artifact by `pointer`. If a "bug" can't be reproduced, return `confirmed:false`.
 - When given several findings, judge each on its own evidence; don't let a plausible narrative carry an unproven one.
 - Return the structured verdict only — no prose dumps.
+- **Context budget (Protocol 09):** work within the first ~30% of your window; pull only the slice you need to reproduce. If confirming would exceed the budget, return `budget.needsDecomposition = true` rather than overrun.
 
 Run on the strong model tier; this is the judgment step the whole loop's trust rests on.

@@ -36,3 +36,12 @@ tick.mjs     # resume-check (auto-reconcile) + digest + next + relevant gates
 Use the `templates/workflows/` patterns; brief subagents with `templates/agents/` prompts; cheap
 model for reads, strong model for synthesis/verify. [P04] Parallel *implementation* uses declared-disjoint
 worktrees [P06] — opt-in, only for ≥2 independent substantial edits.
+
+**Context budget — keep subagents in the first ~30% of their window (default) [P09].** Three levers,
+honestly scoped: (1) **HARD** — cap the INPUT before spawning: `printf '%s' "$brief" | node
+.cadence/lib/context-budget.mjs fits <model> -` (or pass paths). Exit `0` fits · `1` too big · `2`
+error/abort; it **fails closed** (an unseeable input never "fits"). (2) **By hand** — if it doesn't fit,
+**decompose** into smaller subtasks and fan out (no auto-splitter). (3) **Soft** — brief the budget;
+agents self-report `budget.needsDecomposition`. Caveat: `fits` bounds only the *input* — an agent's own
+runtime reads aren't hard-bounded, so **scope the task tightly**. `context-budget.mjs budget <model>`
+prints the numbers; tune the `context` block in `cadence.config.json`.

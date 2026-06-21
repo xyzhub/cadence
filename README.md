@@ -51,6 +51,7 @@ and appends a contract block to your `AGENTS.md`. Edit the config to taste — i
 | **Core** (always) | `ledger.mjs` + `loop-state.schema.json`, `run-gate.mjs` + `gate-signal.schema.json`, `adopt`/`doctor` | Any multi-pass or long autonomous run. Works standalone, ~5 files, one config. |
 | **Opt-in** | `relevance.mjs` (skip gates a diff can't affect) | The full gate suite is slow (> a couple minutes). |
 | **Opt-in** | Fan-out workflows + agent prompts (`templates/`) | Work is parallelizable or needs adversarial verification. |
+| **Default** | `context-budget.mjs` — cap each subagent's INPUT to the first ~30% of its window (fails closed; decompose if it doesn't fit) | Any fan-out; keeps agents in the high-attention region [P09]. |
 | **Opt-in (heavy)** | `parallel` worktrees | ≥2 genuinely independent substantial edits per pass. Per-worktree setup has real cost. |
 
 ## Cost of Cadence (be honest)
@@ -84,9 +85,9 @@ cadence/
   README.md            ← you are here
   AGENTS.md            ← how agents operate in a Cadence repo (the contract; single source of truth)
   CLAUDE.md            ← thin `@AGENTS.md` import so Claude Code picks up the same contract
-  protocols/           ← the 9 protocols (reference; load on demand)
+  protocols/           ← the 10 protocols (reference; load on demand)
   schemas/             ← ledger / gate-signal / adapter / subagent-result (JSON Schema)
-  lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · adopt.mjs · doctor.mjs · tick.mjs
+  lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · context-budget.mjs · adopt.mjs · doctor.mjs · tick.mjs
   templates/           ← cadence.config example · loop-prompt · agent prompts · workflow templates
   skill/SKILL.md       ← the Claude Code skill entry
 ```

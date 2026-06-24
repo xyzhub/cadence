@@ -54,6 +54,7 @@ node /path/to/cadence/lib/adopt.mjs --goal "your objective"
 node .cadence/lib/doctor.mjs            # verify wiring + that gate commands resolve
 node .cadence/lib/selftest.mjs         # verify the copied core itself (exit 0 = all edges hold)
 node .cadence/lib/ledger.mjs show       # the per-tick digest
+node .cadence/lib/overview.mjs --open   # render + open a self-contained HTML progress dashboard
 ```
 
 `adopt` detects your gates (package.json scripts / Makefile / pyproject / Cargo / go.mod), writes
@@ -103,7 +104,7 @@ cadence/
   CLAUDE.md            ← thin `@AGENTS.md` import so Claude Code picks up the same contract
   protocols/           ← the 11 protocols (00–10; reference, load on demand)
   schemas/             ← ledger / gate-signal / adapter / subagent-result (JSON Schema)
-  lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · context-budget.mjs · retrieval.mjs · adopt.mjs · doctor.mjs · tick.mjs · selftest.mjs
+  lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · context-budget.mjs · retrieval.mjs · adopt.mjs · doctor.mjs · tick.mjs · selftest.mjs · overview.mjs
   templates/           ← cadence.config example · loop-prompt · agent prompts · workflow templates
   skills/cadence/SKILL.md  ← the Claude Code skill entry (auto-discovered when installed as a plugin)
   .claude-plugin/      ← plugin.json + marketplace.json (makes the repo installable as a plugin)

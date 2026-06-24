@@ -36,6 +36,7 @@ run-gate.mjs <id> | --auto [files...] | --list
 doctor.mjs   # health check
 tick.mjs     # resume-check (auto-reconcile) + digest + next + relevant gates
 selftest.mjs # pin the core's hand-verified edges (exit 0/1; itself a failable gate)
+overview.mjs # render the ledger as a self-contained cadence-overview.html (progress at a glance; regen each tick)
 ```
 
 ## Fan out (when work is wide or needs adversarial verification)

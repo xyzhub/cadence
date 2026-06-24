@@ -31,10 +31,25 @@ TICK:  read ledger digest ──▶ pick highest-value pending item
          └─ update ledger ──▶ end tick (window discarded)
 ```
 
+## Install as a Claude Code plugin (load it in any session)
+
+This repo is also a Claude Code **plugin** — install it once and the `cadence` skill is available in
+every session, on any machine:
+
+```
+/plugin marketplace add xyzhub/cadence
+/plugin install cadence@cadence
+```
+
+The first name is the marketplace, the second is `<plugin>@<marketplace>` (both happen to be
+`cadence`). The bundled `lib/`, `protocols/`, and `templates/` ride along; the skill resolves them via
+`${CLAUDE_PLUGIN_ROOT}`. Then, from any project, ask Claude to "run the cadence loop" or invoke the
+skill directly — adoption (`adopt.mjs`) copies a self-contained core into that project's `.cadence/`.
+
 ## Quick start (apply to any project)
 
 ```bash
-# from your project root, pointing at the Cadence source:
+# from your project root, pointing at the Cadence source (or ${CLAUDE_PLUGIN_ROOT} if installed as a plugin):
 node /path/to/cadence/lib/adopt.mjs --goal "your objective"
 node .cadence/lib/doctor.mjs            # verify wiring + that gate commands resolve
 node .cadence/lib/selftest.mjs         # verify the copied core itself (exit 0 = all edges hold)
@@ -90,7 +105,8 @@ cadence/
   schemas/             ← ledger / gate-signal / adapter / subagent-result (JSON Schema)
   lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · context-budget.mjs · retrieval.mjs · adopt.mjs · doctor.mjs · tick.mjs · selftest.mjs
   templates/           ← cadence.config example · loop-prompt · agent prompts · workflow templates
-  skill/SKILL.md       ← the Claude Code skill entry
+  skills/cadence/SKILL.md  ← the Claude Code skill entry (auto-discovered when installed as a plugin)
+  .claude-plugin/      ← plugin.json + marketplace.json (makes the repo installable as a plugin)
 ```
 
 Read `protocols/00-stateless-orchestrator.md` next for the architecture, then `08-lifecycle.md` for the tick.

@@ -1,0 +1,11 @@
+{
+  "name": "cadence",
+  "owner": { "name": "Baker", "email": "baker@xyz.dev" },
+  "plugins": [
+    {
+      "name": "cadence",
+      "source": "./",
+      "description": "Stateless orchestration loop over a durable ledger — bounded context, gate signals, context-firewalled fan-out. Adds the `cadence` skill plus the framework core."
+    }
+  ]
+}

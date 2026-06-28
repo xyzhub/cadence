@@ -1,5 +1,10 @@
 # Cadence loop prompt (template)
 
+> **Most users don't need this.** If Cadence is installed as a plugin, just run `/cadence start`
+> (autonomous in-session) or `/loop 10m /cadence-tick` (one pass per interval) — the slash commands
+> fill in project/goal/session for you. This template is for power users running the loop by hand or
+> outside Claude Code.
+
 Paste this as the recurring prompt of a self-paced loop (e.g. Claude Code `/loop`), filling the
 `{{PLACEHOLDERS}}`. It re-enters each tick; the ledger — not this prompt — carries state, so the
 prompt itself stays small and constant.

@@ -42,15 +42,45 @@ every session, on any machine:
 ```
 
 The first name is the marketplace, the second is `<plugin>@<marketplace>` (both happen to be
-`cadence`). The bundled `lib/`, `protocols/`, and `templates/` ride along; the skill resolves them via
-`${CLAUDE_PLUGIN_ROOT}`. Then, from any project, ask Claude to "run the cadence loop" or invoke the
-skill directly — adoption (`adopt.mjs`) copies a self-contained core into that project's `.cadence/`.
+`cadence`). The bundled `lib/`, `protocols/`, `templates/`, and `commands/` ride along; the skill and
+commands resolve them via `${CLAUDE_PLUGIN_ROOT}`. Then drive everything with the **slash commands**
+below — adoption copies a self-contained core into that project's `.cadence/`.
 
-## Quick start (apply to any project)
+## Quick start (slash commands)
+
+Once the plugin is installed, the whole lifecycle is a handful of commands — they work the same on a
+**new** repo and an **existing** one (`init` is idempotent and never clobbers your config/ledger):
+
+```
+# New OR existing project — onboard, then it OFFERS to plan
+/cadence init "migrate the admin area to typed API routes"
+   ✓ detected gates: typecheck, test, build   ✓ wired .cadence/ + AGENTS.md   ✓ doctor: healthy
+   ? Run a planning tick now to decompose the goal?  [Yes / No, I'll start later]
+
+/cadence init --dry-run        # cautious existing repo? preview detection — writes nothing
+
+/cadence plan                  # decompose the goal into a scored, gate-verifiable backlog
+
+# Run the loop, three ways depending on how hands-off you want to be:
+/cadence start                 # autonomous in-session: ticks until a pause condition, then summarizes
+/cadence-tick                  # exactly one pass (review between ticks)
+/loop 10m /cadence-tick        # one pass every 10 min via the built-in loop skill
+
+# Check in / steer anytime
+/cadence-status                # ledger digest + next item + dashboard link
+/cadence add "fix flaky auth test" --gate test --accept "auth suite green"
+/cadence pause                 # unlock + summarize   (/cadence resume to continue)
+/cadence doctor                # health check
+```
+
+`/cadence` with no verb prints full usage. The commands are thin wrappers over the CLI below — that
+CLI is the contract; the commands just save the typing.
+
+## Quick start (raw CLI — what the commands run)
 
 ```bash
 # from your project root, pointing at the Cadence source (or ${CLAUDE_PLUGIN_ROOT} if installed as a plugin):
-node /path/to/cadence/lib/adopt.mjs --goal "your objective"
+node /path/to/cadence/lib/adopt.mjs --goal "your objective"   # add --dry-run to preview without writing
 node .cadence/lib/doctor.mjs            # verify wiring + that gate commands resolve
 node .cadence/lib/selftest.mjs         # verify the copied core itself (exit 0 = all edges hold)
 node .cadence/lib/ledger.mjs show       # the per-tick digest
@@ -108,7 +138,8 @@ cadence/
   protocols/           ← the 11 protocols (00–10; reference, load on demand)
   schemas/             ← ledger / gate-signal / adapter / subagent-result (JSON Schema)
   lib/                 ← ledger.mjs · run-gate.mjs · relevance.mjs · context-budget.mjs · retrieval.mjs · adopt.mjs · doctor.mjs · tick.mjs · selftest.mjs · overview.mjs
-  templates/           ← cadence.config example · loop-prompt · agent prompts · workflow templates
+  templates/           ← cadence.config example · loop-prompt · tick/plan procedures · agent prompts · workflow templates
+  commands/            ← slash commands: /cadence (dispatcher) · /cadence-tick · /cadence-status (auto-discovered)
   skills/cadence/SKILL.md  ← the Claude Code skill entry (auto-discovered when installed as a plugin)
   .claude-plugin/      ← plugin.json + marketplace.json (makes the repo installable as a plugin)
 ```

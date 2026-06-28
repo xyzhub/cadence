@@ -5,7 +5,7 @@
     {
       "name": "cadence",
       "source": "./",
-      "description": "Stateless orchestration loop over a durable ledger — bounded context, gate signals, context-firewalled fan-out. Adds the `cadence` skill plus the framework core."
+      "description": "Stateless orchestration loop over a durable ledger — bounded context, gate signals, context-firewalled fan-out. Adds the `cadence` skill, slash commands (/cadence, /cadence-tick, /cadence-status), plus the framework core."
     }
   ]
 }

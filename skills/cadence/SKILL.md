@@ -9,7 +9,19 @@ A portable loop for long autonomous work: the orchestrator stays a **stateless c
 `.cadence/loop-state.json`, so its context is bounded by construction instead of bloating then being
 compacted. Full design in `${CLAUDE_PLUGIN_ROOT}/README.md`; protocols in `${CLAUDE_PLUGIN_ROOT}/protocols/`.
 
-## First time in a repo
+## Easiest path — slash commands
+```
+/cadence init "<objective>"   # onboard this repo (new OR existing), then offer to plan
+/cadence plan                 # decompose the goal into a scored, gate-verifiable backlog
+/cadence start                # run the autonomous loop until a pause condition
+/cadence-tick                 # one pass     ·    /loop 10m /cadence-tick  → one pass per interval
+/cadence-status               # read-only ledger digest + dashboard
+```
+`/cadence init --dry-run` previews adoption (detects gates, writes nothing). `/cadence` with no verb
+prints full usage. The commands are thin wrappers over the `lib/` CLI below — that CLI is the
+contract; the commands just save you the typing.
+
+## First time in a repo (what `/cadence init` runs)
 ```
 node "${CLAUDE_PLUGIN_ROOT}/lib/adopt.mjs" --goal "<objective>"   # detects gates, writes .cadence/, wires AGENTS.md
 node .cadence/lib/doctor.mjs                                       # verify wiring
@@ -17,9 +29,9 @@ node .cadence/lib/doctor.mjs                                       # verify wiri
 After adopt, every later tick runs from the repo-local `.cadence/lib/` copy; only `adopt` and the
 reference docs (README, `protocols/`, `templates/`) live in the plugin at `${CLAUDE_PLUGIN_ROOT}`.
 
-## Each tick (one pass)
+## Each tick (one pass — what `/cadence-tick` runs)
 1. `node .cadence/lib/tick.mjs` — digest + next item + relevant gate signals (the bounded inputs).
-2. Take the highest-value pending item (address its `lastError` if retrying).
+2. Take the highest-value pending item (address its `lastError` if retrying). If it's `plan-backlog` or the queue is thin, PLAN instead (`/cadence plan`).
 3. Act. For wide/risky work, fan out (see `${CLAUDE_PLUGIN_ROOT}/templates/workflows/`): cheap tier for reads, strong tier for synthesis/verify; subagents return distilled, pointer-only results. **Never read corpora or raw logs into your own context.**
 4. `node .cadence/lib/run-gate.mjs --auto` — a SIGNAL, not logs. `reason:"gate"` = code; `reason:"error"` = config.
 5. Verify by execution; review your own diff via a firewalled reviewer before commit.

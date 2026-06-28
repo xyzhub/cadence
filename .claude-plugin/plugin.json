@@ -1,8 +1,8 @@
 {
   "name": "cadence",
   "displayName": "Cadence",
-  "version": "0.1.0",
-  "description": "A portable orchestration loop for AI coding agents — a stateless orchestrator over a durable ledger with bounded context, gate signals, and context-firewalled fan-out. Bundles the cadence skill plus the lib/ core, protocols, schemas, and fan-out templates.",
+  "version": "0.2.0",
+  "description": "A portable orchestration loop for AI coding agents — a stateless orchestrator over a durable ledger with bounded context, gate signals, and context-firewalled fan-out. Bundles the cadence skill, slash commands (/cadence, /cadence-tick, /cadence-status), plus the lib/ core, protocols, schemas, and fan-out templates.",
   "author": { "name": "Baker", "email": "baker@xyz.dev" },
   "homepage": "https://github.com/xyzhub/cadence",
   "repository": "https://github.com/xyzhub/cadence",

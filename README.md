@@ -87,6 +87,9 @@ node .cadence/lib/ledger.mjs show       # the per-tick digest
 node .cadence/lib/overview.mjs --open   # render + open a self-contained HTML progress dashboard
 ```
 
+> `selftest.mjs` prints `N skipped` when an optional tool (e.g. the CodeGraph CLI) isn't installed —
+> that's expected, not a failure. Only a **non-zero exit** means a real problem.
+
 `adopt` detects your gates (package.json scripts / Makefile / pyproject / Cargo / go.mod), writes
 `.cadence/cadence.config.json`, seeds the ledger, copies a **self-contained** core into `.cadence/lib/`,
 and appends a contract block to your `AGENTS.md`. Edit the config to taste — it's the only file you own.

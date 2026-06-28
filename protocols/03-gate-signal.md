@@ -10,7 +10,9 @@ Failable checks return a **signal**, never a log. Runner: `lib/run-gate.mjs`. Co
   - `gate` — the **code** genuinely failed the check (act on it).
   - `error` — the gate couldn't run/parse/timed out (a **config** problem; fix the config, not the code).
 - MUST fail **closed**: unparseable output, timeout, or exit 126/127 ⇒ `pass:false`.
-- Timeout is enforced **in-process** (Node child_process) — never depend on a `timeout` binary (absent on macOS).
+- Timeout is enforced **in-process** (Node child_process): on expiry it **SIGKILLs the whole process
+  group** and **resolves immediately** (never waits for the child's `close`), so a hung command whose
+  grandchildren linger can't wedge the runner. No dependency on a `timeout` binary (absent on macOS).
 - Write every result to the ledger via `ledger.mjs gate <id> pass|fail` (single writer).
 
 ## Failable check

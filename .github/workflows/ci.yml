@@ -1,0 +1,22 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  selftest:
+    name: selftest (${{ matrix.os }}, node ${{ matrix.node }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        node: [20, 22]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      # The selftest exercises ledger, run-gate (incl. the process-group timeout),
+      # adopt, doctor, tick, overview, and context-budget as real subprocesses.
+      # Codegraph-dependent checks self-skip when the CLI is absent (it is, on runners).
+      - run: node lib/selftest.mjs

@@ -39,6 +39,12 @@ selftest.mjs # pin the core's hand-verified edges (exit 0/1; itself a failable g
 overview.mjs # render the ledger as a self-contained cadence-overview.html (progress at a glance; regen each tick)
 ```
 
+**Slash commands (Claude Code) wrap these verbs:** `/cadence init` → adopt+doctor (then offers a
+planning tick) · `/cadence plan` → a planning tick [P10] · `/cadence tick` / `/cadence-tick` → one
+pass · `/cadence start` → the autonomous loop · `/cadence status` / `/cadence-status` → `show`+`next`
+· `/cadence add|pause|resume|doctor`. They're convenience over the CLI above — this contract is still
+the source of truth. Run a tick on a timer with `/loop 10m /cadence-tick`.
+
 ## Fan out (when work is wide or needs adversarial verification)
 Use the `templates/workflows/` patterns; brief subagents with `templates/agents/` prompts; cheap
 model for reads, strong model for synthesis/verify. [P04] Parallel *implementation* uses declared-disjoint
